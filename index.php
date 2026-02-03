@@ -1,6 +1,11 @@
 <?php
 require_once 'header.php';
 sql_connect(); 
+require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php'; 
+
+// Récupération des 3 derniers articles
+// Utilisation de 1=1 pour assurer la compatibilité avec ta fonction sql_select
+$latestArticles = sql_select("ARTICLE", "*", "1=1 ORDER BY dtCreaArt DESC LIMIT 3");
 ?>
 
 <div class="hero-container">
@@ -40,59 +45,45 @@ sql_connect();
     <div class="container pb-4">
         <div class="row g-4">
             
+            <?php 
+            if ($latestArticles) {
+                foreach($latestArticles as $article) { 
+            ?>
             <div class="col-md-4">
                 <div class="card h-100 article-card">
-                    <img src="https://placehold.co/600x400/333/FFF?text=Skate+Connect" class="card-img-top" alt="Festival Connect">
-                    <div class="card-body">
-                        <h5 class="card-title">Festival Connect : explorer la ville à travers la culture du skate.</h5>
-                        <p class="card-text">Festival Connect est un événement où le skate devient un véritable langage urbain.</p>
+                    <img src="<?php echo ROOT_URL . '/src/uploads/' . htmlspecialchars($article['urlPhotArt']); ?>" 
+                         class="card-img-top" 
+                         alt="<?php echo htmlspecialchars($article['libTitrArt']); ?>">
+                    
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title"><?php echo htmlspecialchars($article['libTitrArt']); ?></h5>
+                        <p class="card-text">
+                            <?php echo substr(htmlspecialchars($article['libChapoArt']), 0, 100) . '...'; ?>
+                        </p>
+                        
                         <div class="article-meta mt-auto pt-3 d-flex justify-content-between align-items-center">
-                            <span class="article-date">16 au 19 Oct 2025 • Événement</span>
+                            <span class="article-date">Posté le <?php echo date("d/m/Y", strtotime($article['dtCreaArt'])); ?></span>
                             <div class="article-icons">
-                                <i class="bi bi-chat-left-text me-2"></i> <i class="bi bi-heart"></i>
+                                <a href="views/frontend/articles/article1.php" class="text-dark">
+                                    <i class="bi bi-arrow-right-circle-fill fs-4"></i>
+                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <div class="col-md-4">
-                <div class="card h-100 article-card">
-                    <img src="https://placehold.co/600x400/333/FFF?text=Sorem+Ipsum" class="card-img-top" alt="Sorem Ipsum">
-                    <div class="card-body">
-                        <h5 class="card-title">Sorem ipsum dolor sit amet, consectetur adipiscing elit.</h5>
-                        <p class="card-text">Borem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et velit interdum...</p>
-                        <div class="article-meta mt-auto pt-3 d-flex justify-content-between align-items-center">
-                            <span class="article-date">16 au 19 Oct 2025 • Événement</span>
-                            <div class="article-icons">
-                                <i class="bi bi-chat-left-text me-2"></i> <i class="bi bi-heart"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="card h-100 article-card">
-                    <img src="https://placehold.co/600x400/333/FFF?text=Championnat" class="card-img-top" alt="Championnat">
-                    <div class="card-body">
-                        <h5 class="card-title">L'étape n°3 du championnat de France aura lieu a Pessac</h5>
-                        <p class="card-text">Dorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor...</p>
-                        <div class="article-meta mt-auto pt-3 d-flex justify-content-between align-items-center">
-                            <span class="article-date">16 au 19 Oct 2025 • Événement</span>
-                            <div class="article-icons">
-                                <i class="bi bi-chat-left-text me-2"></i> <i class="bi bi-heart"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <?php 
+                } // Fin du foreach
+            } else {
+                echo "<div class='col-12 text-center'><p>Aucun article trouvé.</p></div>";
+            }
+            ?>
 
         </div>
 
         <div class="row mt-5 mb-5">
             <div class="col-12 text-center">
-                <a href="#" class="btn-all-articles">Tous les articles</a>
+                <a href="views/frontend/articles/articles.php" class="btn-all-articles">Tous les articles</a>
             </div>
         </div>
     </div>
@@ -134,13 +125,13 @@ sql_connect();
             </div>
 
             <div class="col-lg-6 ps-lg-5">
-                <h2 class="community-title">Devient membre de la <span class="pink-text-dark">communauté</span></h2>
+                <h2 class="community-title">Deviens membre de la <span class="pink-text-dark">communauté</span></h2>
                 <p class="community-text mt-3">
                     Tu souhaites participer aux concours, liker des posts et les commenter ? 
                     N'attends pas une seconde de plus pour créer ton compte et rentrer dans l'univers du skate entre passionnés !
                 </p>
                 <div class="mt-4">
-                    <a href="inscription.php" class="btn-inscription">Inscription</a>
+                    <a href="api/security/signup.php" class="btn-signup">Inscription</a>
                 </div>
             </div>
         </div>
@@ -151,7 +142,7 @@ sql_connect();
     @import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Inter:wght@400;500;700;800;900&display=swap');
     @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
 
-    /* --- HERO & TRANSITION --- */
+    /* HERO */
     .hero-container { position: relative; height: 85vh; background: #000; border-radius: 0 0 50px 50px; overflow: hidden; display: flex; align-items: flex-end; }
     .hero-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.7; z-index: 1; }
     .hero-content { position: relative; z-index: 2; padding: 0 5% 15% 5%; width: 100%; }
@@ -160,29 +151,23 @@ sql_connect();
     .hero-subtitle { max-width: 800px; font-size: 1.2rem; color: #fff; margin-top: 25px; font-family: 'Inter', sans-serif; }
     .hero-date { font-weight: bold; font-size: 1.3rem; color: #fff; margin-top: 15px; font-family: 'Inter', sans-serif; }
     
+    /* TRANSITION */
     .news-transition { background-color: #fce4f4; margin-top: -60px; border-radius: 50px 50px 0 0; position: relative; z-index: 10; }
     .btn-container { height: 0; width: 100%; }
     .btn-read-more { background-color: #f778f2; color: #000; font-family: 'Inter', sans-serif; font-weight: 700; padding: 15px 35px; border-radius: 20px; text-decoration: none; display: inline-block; transition: transform 0.2s; position: relative; top: -165px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
     .btn-read-more:hover { transform: scale(1.05); }
     
-    .badge-wrapper { position: relative; display: inline-block; will-change: transform; /* Optimisation pour l'anim */ }
+    .badge-wrapper { position: relative; display: inline-block; will-change: transform; }
     .img-badge-actus { width: 320px; height: auto; display: block; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.15)); }
-    /* Note : la rotation du texte est conservée même si le badge tourne */
     .badge-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-6deg) scaleX(1.4) skewX(-10deg); font-family: 'Inter', sans-serif; font-weight: 900; font-size: 1.5rem; color: #000; white-space: nowrap; pointer-events: none; letter-spacing: -1px; opacity: 0.85; mix-blend-mode: multiply; }
     .triple-arrows { font-size: 2.5rem; font-weight: 900; color: #000; display: inline-block; }
 
-    /* --- ARTICLES & BACKGROUND --- */
+    /* SECTIONS */
     .articles-section, .featured-block, .community-section { background-color: #fce4f4; }
     .articles-section { padding-top: 20px; }
 
-    .article-card {
-        background-color: #eeeeef;
-        border: none;
-        border-radius: 25px;
-        overflow: hidden;
-        transition: transform 0.3s ease;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-    }
+    /* CARDS */
+    .article-card { background-color: #eeeeef; border: none; border-radius: 25px; overflow: hidden; transition: transform 0.3s ease; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
     .article-card:hover { transform: translateY(-5px); }
     .article-card .card-img-top { height: 220px; object-fit: cover; filter: grayscale(100%); }
     .article-card .card-body { padding: 1.5rem; }
@@ -190,85 +175,25 @@ sql_connect();
     .article-card .card-text { font-family: 'Inter', sans-serif; font-size: 0.95rem; color: #333; line-height: 1.5; }
     .article-date { font-size: 0.8rem; font-weight: 600; color: #555; }
     
-    .btn-all-articles {
-        background-color: #ff85f1;
-        color: #000;
-        font-family: 'Inter', sans-serif;
-        font-weight: 700;
-        padding: 12px 40px;
-        border-radius: 30px;
-        text-decoration: none;
-        display: inline-block;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        transition: background 0.3s;
-    }
+    .btn-all-articles { background-color: #ff85f1; color: #000; font-family: 'Inter', sans-serif; font-weight: 700; padding: 12px 40px; border-radius: 30px; text-decoration: none; display: inline-block; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: background 0.3s; }
     .btn-all-articles:hover { background-color: #ff60ea; }
 
-    /* --- ADRIEN RAZA --- */
-    .feature-card-large {
-        position: relative;
-        border-radius: 0; 
-        overflow: hidden;
-        height: 80vh; 
-        min-height: 600px;
-        display: flex;
-        align-items: flex-end;
-    }
-    .feature-bg-img {
-        position: absolute;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        object-fit: cover;
-        object-position: top center; 
-        filter: grayscale(100%) brightness(0.6);
-        z-index: 1;
-    }
-    .feature-content {
-        position: relative;
-        z-index: 2;
-        padding-bottom: 4rem;
-        padding-top: 4rem;
-        width: 100%;
-        color: white;
-        background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 60%, transparent 100%);
-    }
+    /* FEATURED */
+    .feature-card-large { position: relative; border-radius: 0; overflow: hidden; height: 80vh; min-height: 600px; display: flex; align-items: flex-end; }
+    .feature-bg-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; object-position: top center; filter: grayscale(100%) brightness(0.6); z-index: 1; }
+    .feature-content { position: relative; z-index: 2; padding-bottom: 4rem; padding-top: 4rem; width: 100%; color: white; background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 60%, transparent 100%); }
     .feature-quote { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 2.5rem; line-height: 1.1; margin-bottom: 1.5rem; }
     .pink-highlight { color: #ffb7e6; }
     .feature-desc { font-family: 'Inter', sans-serif; font-size: 1.2rem; max-width: 650px; margin-bottom: 0; opacity: 0.9; }
-    .btn-read-feature {
-        background-color: #ffc4ec;
-        color: #000;
-        font-family: 'Inter', sans-serif;
-        font-weight: 700;
-        font-size: 1.1rem;
-        padding: 15px 40px;
-        border-radius: 15px;
-        text-decoration: none;
-        transition: transform 0.2s;
-        display: inline-block;
-    }
+    .btn-read-feature { background-color: #ffc4ec; color: #000; font-family: 'Inter', sans-serif; font-weight: 700; font-size: 1.1rem; padding: 15px 40px; border-radius: 15px; text-decoration: none; transition: transform 0.2s; display: inline-block; }
     .btn-read-feature:hover { transform: scale(1.05); background-color: #ff9ee0; color: #000; }
 
-    /* --- COMMUNAUTÉ --- */
+    /* COMMUNITY */
     .community-section { background: #fff; }
     .community-img { max-width: 100%; height: auto; }
     .community-title { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 2.5rem; color: #000; line-height: 1.2; }
     .community-text { font-family: 'Inter', sans-serif; font-size: 1.1rem; color: #333; line-height: 1.6; max-width: 500px; }
-    
-    .btn-inscription {
-        background-color: #fdeef9;
-        color: #000;
-        font-family: 'Inter', sans-serif;
-        font-weight: 700;
-        font-size: 1.1rem;
-        padding: 12px 40px;
-        border-radius: 30px;
-        border: 2px solid #fecded;
-        text-decoration: none;
-        display: inline-block;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        transition: all 0.3s ease;
-    }
+    .btn-inscription { background-color: #fdeef9; color: #000; font-family: 'Inter', sans-serif; font-weight: 700; font-size: 1.1rem; padding: 12px 40px; border-radius: 30px; border: 2px solid #fecded; text-decoration: none; display: inline-block; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: all 0.3s ease; }
     .btn-inscription:hover { background-color: #fecded; transform: translateY(-2px); color: #000; }
 
     @media (max-width: 768px) {
@@ -279,16 +204,9 @@ sql_connect();
 </style>
 
 <script>
-    // Récupération de l'élément à faire tourner
     const badge = document.getElementById('rotating-badge');
-
-    // Écoute du scroll de la page
     window.addEventListener('scroll', () => {
-        // Calcul de la rotation en fonction de la position du scroll
-        // Divise par 4 pour une vitesse fluide. Augmente le chiffre pour ralentir.
         const rotation = window.scrollY / 4;
-        
-        // Application de la rotation
         badge.style.transform = `rotate(${rotation}deg)`;
     });
 </script>
