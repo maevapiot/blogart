@@ -131,7 +131,7 @@ $latestArticles = sql_select("ARTICLE", "*", "1=1 ORDER BY dtCreaArt DESC LIMIT 
                     N'attends pas une seconde de plus pour créer ton compte et rentrer dans l'univers du skate entre passionnés !
                 </p>
                 <div class="mt-4">
-                    <a href="api/security/signup.php" class="btn-signup">Inscription</a>
+                    <a href="api/security/signup.php" class="btn-inscription">Inscription</a>
                 </div>
             </div>
         </div>

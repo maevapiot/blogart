@@ -1,89 +1,148 @@
 <?php
-// On remonte à la racine pour charger les outils nécessaires
-$root = $_SERVER['DOCUMENT_ROOT']; 
-require_once $root . '/header.php'; // Charge le header et les fonctions
-sql_connect(); // Connecte la base de données
+// ---------------------------------------------------------
+// ÉTAPE 1 : Chargement
+// ---------------------------------------------------------
+require_once '../../header.php'; 
+sql_connect(); 
 
-// Code pour récupérer les acteurs (si ce n'est pas déjà fait plus bas)
-$allActors = sql_select("THEMATIQUE", "*"); // Exemple, adapte selon ta table
-?>
-<?php 
-// Pas besoin de refaire les require si ce fichier est inclus dans index.php
-// On s'assure juste de récupérer les articles de la thématique "Acteurs" (numThem = 2 par exemple)
-// Vérifie bien que le numéro correspond à celui dans ta BDD.
-$article = sql_select("ARTICLE", "*", "numThem = 2");
+// ---------------------------------------------------------
+// ÉTAPE 2 : Récupération des articles
+// ---------------------------------------------------------
+$idThematiqueActeurs = 2; 
+$tousLesArticles = sql_select("ARTICLE", "*", "numThem = " . $idThematiqueActeurs);
 ?>
 
 <style>
-    /* Styles spécifiques pour cette section */
-    @import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Inter:wght@400;500;700;800;900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Inter:wght@400;500;700;900&display=swap');
     
-    .section-title-graphic {
-        font-family: 'Luckiest Guy', cursive;
-        font-size: 4rem;
-        text-transform: uppercase;
-        color: #000;
+    body { background-color: #f4f7f6; }
+
+    /* Titre principal */
+    .titre-section-acteurs { font-family: 'Luckiest Guy', cursive; font-size: 4.5rem; text-transform: uppercase; color: #1a1a1a; margin-bottom: 5rem; text-shadow: 2px 2px 0px #e0e0e0; }
+
+    /* --- DESIGN CARTE PREMIUM --- */
+    .article-card-premium {
+        background-color: #ffffff;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+        margin-bottom: 5rem;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
-    .actors-headline {
-        font-family: 'Inter', sans-serif; 
-        font-weight: 800; 
-        font-size: 1.4rem; 
-        text-transform: uppercase;
-        line-height: 1.2;
-        color: #000;
+
+    .article-card-premium:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 25px 50px rgba(0,0,0,0.12);
     }
-    .actors-text {
-        font-family: 'Inter', sans-serif; 
-        font-size: 1.1rem; 
-        color: #333;
-        line-height: 1.5;
+
+    /* --- CORRECTION IMAGE : PLUS DE ZOOM EXCESSIF --- */
+    .image-container-full {
+        /* On enlève height: 100% et min-height */
+        width: 100%;
+        height: auto;
+    }
+
+    .article-image-premium {
+        width: 100%;
+        height: auto; /* La hauteur s'adapte pour ne pas déformer */
+        display: block; /* Supprime un petit espace fantôme sous l'image */
+        border-right: 1px solid rgba(0,0,0,0.05);
+    }
+    /* ----------------------------------------------- */
+
+    /* Zone de texte */
+    .content-padding { padding: 3.5rem; }
+    
+    /* Typographie */
+    .sous-titre-article-premium { font-family: 'Inter', sans-serif; font-weight: 900; font-size: 2.5rem; text-transform: uppercase; color: #111; line-height: 1.1; letter-spacing: -1px; margin-bottom: 1.5rem; }
+    .texte-chapo-premium { font-family: 'Inter', sans-serif; font-size: 1.2rem; font-weight: 700; color: #0056b3; line-height: 1.5; margin-bottom: 2rem; }
+    .texte-accroche-premium { font-family: 'Inter', sans-serif; font-size: 1.3rem; font-style: italic; font-weight: 500; color: #333; border-left: 6px solid #0056b3; padding: 20px 30px; margin: 30px 0; background: #f8fbff; border-radius: 0 12px 12px 0; }
+    .texte-paragraphe-premium { font-family: 'Inter', sans-serif; font-size: 1.05rem; color: #444; line-height: 1.8; text-align: justify; margin-bottom: 1.5rem; }
+    .texte-intertitre-premium { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 1.6rem; margin-top: 2.5rem; margin-bottom: 1rem; color: #111; }
+
+    /* Mobile */
+    @media (max-width: 991px) {
+        .content-padding { padding: 2rem; }
+        .sous-titre-article-premium { font-size: 2rem; }
+        .article-image-premium { border-right: none; border-bottom: 1px solid rgba(0,0,0,0.05); }
     }
 </style>
 
-<section class="actors-section py-5">
+<section class="py-5">
     <div class="container">
         
-        <div class="row mb-5">
+        <div class="row">
             <div class="col-12 text-center">
-                <h2 class="section-title-graphic">LES ACTEURS</h2>
+                <h1 class="titre-section-acteurs">LES ACTEURS</h1>
             </div>
         </div>
 
-        <?php foreach($article as $articles) { if (isset($articles)) { ?>
+        <?php 
+        if ($tousLesArticles) {
+            foreach($tousLesArticles as $article) { 
+                if (stripos($article['libTitrArt'], 'Nicolas') !== false) { continue; }
+                $lienImage = '../../src/uploads/' . $article['urlPhotArt'];
+        ?>
             
-            <div class="row align-items-center mb-5">
+            <div class="row article-card-premium g-0 align-items-center">
                 
-                <div class="col-lg-7">
-                    <a href="/views/frontend/articles/article.php?id=<?php echo isset($_SESSION['user_id']) ? $_SESSION['user_id'] : ''; ?>&numArt=<?php echo $articles['numArt']; ?>&like=0">
-                        <img src="<?php echo ROOT_URL . '/src/uploads/' . htmlspecialchars($articles['urlPhotArt']); ?>" 
-                             class="img-fluid w-100" 
-                             alt="<?php echo htmlspecialchars($articles['libTitrArt']); ?>" 
-                             style="object-fit: cover; border-radius: 5px;">
-                    </a>
-                </div>
-
-                <div class="col-lg-5 ps-lg-5 mt-4 mt-lg-0">
-                    
-                    <h3 class="actors-headline">
-                        <?php echo htmlspecialchars($articles['libTitrArt']); ?>
-                    </h3>
-                    
-                    <p class="actors-text mt-3">
-                        <?php echo htmlspecialchars($articles['libChapoArt']); ?>
-                    </p>
-
-                    <div class="mt-3">
-                        <a href="/views/frontend/articles/article.php?id=<?php echo isset($_SESSION['user_id']) ? $_SESSION['user_id'] : ''; ?>&numArt=<?php echo $articles['numArt']; ?>&like=0" 
-                           class="text-dark fw-bold text-decoration-underline">
-                           Lire l'interview &rarr;
-                        </a>
+                <div class="col-lg-5 p-0">
+                    <div class="image-container-full">
+                        <img src="<?php echo $lienImage; ?>" 
+                                class="article-image-premium" 
+                                alt="<?php echo htmlspecialchars($article['libTitrArt']); ?>">
                     </div>
                 </div>
 
+                <div class="col-lg-7">
+                    <div class="content-padding">
+                        <h2 class="sous-titre-article-premium">
+                            <?php echo htmlspecialchars($article['libTitrArt']); ?>
+                        </h2>
+                        
+                        <div class="texte-chapo-premium">
+                            <?php echo nl2br(htmlspecialchars($article['libChapoArt'])); ?>
+                        </div>
+
+                        <?php if(!empty($article['libAccrochArt'])) { ?>
+                            <div class="texte-accroche-premium">
+                                “<?php echo nl2br(htmlspecialchars($article['libAccrochArt'])); ?>”
+                            </div>
+                        <?php } ?>
+
+                        <div class="texte-paragraphe-premium">
+                            <?php echo nl2br(htmlspecialchars($article['parag1Art'])); ?>
+                        </div>
+
+                        <?php if(!empty($article['libSsTitr1Art'])) { ?>
+                            <h3 class="texte-intertitre-premium"><?php echo htmlspecialchars($article['libSsTitr1Art']); ?></h3>
+                        <?php } ?>
+                        
+                        <div class="texte-paragraphe-premium">
+                            <?php echo nl2br(htmlspecialchars($article['parag2Art'])); ?>
+                        </div>
+
+                        <?php if(!empty($article['libSsTitr2Art'])) { ?>
+                            <h3 class="texte-intertitre-premium"><?php echo htmlspecialchars($article['libSsTitr2Art']); ?></h3>
+                        <?php } ?>
+
+                        <div class="texte-paragraphe-premium">
+                            <?php echo nl2br(htmlspecialchars($article['parag3Art'])); ?>
+                        </div>
+
+                        <div class="texte-paragraphe-premium fw-bold mt-4" style="color: #0056b3;">
+                            <?php echo nl2br(htmlspecialchars($article['libConclArt'])); ?>
+                        </div>
+                    </div>
+                </div>
             </div>
-            
-        <?php }} ?>
+
+        <?php 
+            } 
+        } 
+        ?>
 
     </div>
 </section>
-<?php include 'views/frontend/actors.php'; ?>
+
+<?php require_once '../../footer.php'; ?>
