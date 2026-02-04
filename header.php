@@ -195,7 +195,7 @@ require_once 'config.php';
 
 
         <!-- Logo -->
-      <a href="/BLOGART26" class="logo">
+      <a href="/index.php" class="logo">
     <img src="/src/images/logo-swag.png" alt="Logo SWAG">
     <span>SWAG</span>
 </a>
@@ -207,9 +207,9 @@ require_once 'config.php';
 
         <!-- Menu -->
         <nav class="main-nav">
-            <a href="#">ÉVÉNEMENTS</a>
+            <a href="/views/frontend/events.php">ÉVÉNEMENTS</a>
             <a href="#">INSOLITE</a>
-            <a href="views/frontend/actors.php">ACTEURS</a>
+            <a href="/views/frontend/actors.php">ACTEURS</a>
              <a href="#">A PROPOS</a>
         </nav>
 

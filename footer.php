@@ -11,7 +11,7 @@
 
        <!-- GAUCHE : LOGO -->
        <div class="footer-left">
-           <img src="log.png" alt="Logo SWAG">
+           <img src="/src/log.png" alt="Logo SWAG">
        </div>
 
 
