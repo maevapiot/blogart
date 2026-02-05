@@ -6,7 +6,7 @@ require_once '../../functions/ctrlSaisies.php';
 
 // Récupérer + sécuriser
 $libCom  = ctrlSaisies($_POST['libCom'] ?? '');
-$numArt  = (int)($_GET['numArt'] ?? 0);
+$numArt  = (int)($_POST['numArt'] ?? 0);
 $numMemb = (int)($_POST['numMemb'] ?? 0);
 
 // Vérifs
