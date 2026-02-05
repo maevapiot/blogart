@@ -22,7 +22,7 @@ $latestArticles = sql_select("ARTICLE", "*", "1=1 ORDER BY dtCreaArt DESC LIMIT 
             
             <div class="col-4 ps-5 text-start">
                 <div class="btn-container">
-                    <a href="#" class="btn-read-more">Lire l'article &rarr;</a>
+                    <a href="views/frontend/articles/article1.php?idArt=9" class="btn-read-more">Lire l'article &rarr;</a>
                 </div>
                 <span class="triple-arrows">↓ ↓ ↓</span>
             </div>
@@ -65,7 +65,7 @@ $latestArticles = sql_select("ARTICLE", "*", "1=1 ORDER BY dtCreaArt DESC LIMIT 
                         <div class="article-meta mt-auto pt-3 d-flex justify-content-between align-items-center">
                             <span class="article-date">Posté le <?php echo date("d/m/Y", strtotime($article['dtCreaArt'])); ?></span>
                             <div class="article-icons">
-                                <a href="views/frontend/articles/article1.php" class="text-dark">
+                                <a href="views/frontend/articles/article1.php?idArt=<?=$article['numArt']?>" class="text-dark">
                                     <i class="bi bi-arrow-right-circle-fill fs-4"></i>
                                 </a>
                             </div>
@@ -108,7 +108,7 @@ $latestArticles = sql_select("ARTICLE", "*", "1=1 ORDER BY dtCreaArt DESC LIMIT 
                         </div>
                         <div class="col-lg-4 d-flex align-items-end justify-content-lg-end mt-4 mt-lg-0">
                             <div class="feature-btn-wrapper">
-                                <a href="#" class="btn-read-feature">Lire plus &rarr;</a>
+                                <a href="/views/frontend/original.php?$numArt=<?$article['numArt']?>" class="btn-read-feature">Lire plus &rarr;</a>
                             </div>
                         </div>
                     </div>
@@ -175,7 +175,6 @@ $latestArticles = sql_select("ARTICLE", "*", "1=1 ORDER BY dtCreaArt DESC LIMIT 
     .img-badge-actus { width: 320px; height: auto; display: block; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.15)); }
     .badge-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-6deg) scaleX(1.4) skewX(-10deg); font-family: 'Inter', sans-serif; font-weight: 900; font-size: 1.5rem; color: #000; white-space: nowrap; pointer-events: none; letter-spacing: -1px; opacity: 0.85; mix-blend-mode: multiply; }
     
-    /* --- RETOUR DU STYLE DES FLÈCHES TEXTE --- */
     .triple-arrows { 
         font-family: 'Inter', sans-serif;
         font-size: 2.5rem; 
