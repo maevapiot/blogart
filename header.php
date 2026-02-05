@@ -386,29 +386,21 @@ $cookieConsent = $_COOKIE['cookie_consent'] ?? null;
 
 
 
+</div>
+
+<!-- Login / Logout -->
+<?php if (isset($_SESSION['pseudoMemb'])): ?>
+    <!-- Utilisateur connecté : bouton de déconnexion -->
+    <a href="/api/security/disconnect.php" class="login-btn">LOGOUT</a>
+<?php else: ?>
+    <!-- Utilisateur non connecté : bouton LOGIN -->
+    <a href="/views/backend/security/login.php" class="login-btn">LOGIN</a>
+<?php endif; ?>
 
 </div>
 
 
 
-
-
-
-
-
-        <!-- Login -->
-       <a href="/views/backend/security/login.php" class="login-btn">
-    LOGIN
-</a>
-
-
-
-
-
-
-
-
-    </div>
 </header>
 </body>
 </html>
