@@ -163,6 +163,20 @@ color: #111;
                 <input type="hidden" name="numMemb" value="<?php echo $_SESSION['numMemb'] ?? 0; ?>">
                 <input type=submit>
         </form>
+        <div class="comments-section">
+    <?php $comments = sql_select('COMMENT', '*', "numArt = {$art['numArt']}"); ?>
+        <h3>Commentaires</h3>
+    <?php if (!empty($comments)): ?>
+        <?php foreach ($comments as $com): ?>
+            <div class="comment">
+                <p><?php echo nl2br(htmlspecialchars($com['libCom'])); ?></p>
+            </div>
+            <hr>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <p>Aucun commentaire pour cet article.</p>
+    <?php endif; ?>
+</div>
 </div>
 
 </section>
