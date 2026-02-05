@@ -1,29 +1,60 @@
 <?php
-include '../../../header.php';
 
 
-// Vérifie si l'utilisateur est connecté, sinon redirige vers la page de login
-if (!isset($_SESSION['pseudoMemb'])) {
+
+require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/ctrlSaisies.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/header.php';
+
+
+/**
+ * Autoriser uniquement admin (1) ou modérateur (2)
+ */
+$userStat = (int)($_SESSION['numStat'] ?? 0);
+if (!isset($_SESSION['pseudoMemb']) || !in_array($userStat, [1, 2], true)) {
+    $_SESSION['error_message'] = "Accès refusé.";
     header("Location: " . ROOT_URL . "/views/backend/security/login.php");
     exit();
 }
 
 
-if(isset($_GET['numMemb'])){
-    $numMemb = $_GET['numMemb'];
-    $nomMemb = sql_select("membre", "nomMemb", "numMemb = $numMemb")[0]['nomMemb'];
-    $prenomMemb = sql_select("membre", "prenomMemb", "numMemb = $numMemb")[0]['prenomMemb'];
-    $pseudoMemb = sql_select("membre", "pseudoMemb", "numMemb = $numMemb")[0]['pseudoMemb'];
-    $passMemb = sql_select("membre", "passMemb", "numMemb = $numMemb")[0]['passMemb'];
-    $eMailMemb = sql_select("membre", "eMailMemb", "numMemb = $numMemb")[0]['eMailMemb'];
+// ID membre à supprimer (GET)
+$numMemb = isset($_GET['numMemb']) ? (int)$_GET['numMemb'] : 0;
+if ($numMemb <= 0) {
+    $_SESSION['error_message'] = "ID membre invalide.";
+    header("Location: " . ROOT_URL . "/views/backend/members/list.php");
+    exit();
+}
 
 
+// Récupérer le membre (une seule requête)
+$res = sql_select("membre", "*", "numMemb = $numMemb");
+if (!$res || !isset($res[0]['numMemb'])) {
+    $_SESSION['error_message'] = "Membre introuvable.";
+    header("Location: " . ROOT_URL . "/views/backend/members/list.php");
+    exit();
+}
+$m = $res[0];
+
+
+// Interdire suppression admin cible (numStat=1)
+if ((int)$m['numStat'] === 1) {
+    $_SESSION['error_message'] = "Suppression interdite : le compte administrateur ne peut pas être supprimé.";
+    header("Location: " . ROOT_URL . "/views/backend/members/list.php");
+    exit();
+}
+
+
+// Si l'utilisateur connecté est modo (2) -> il ne supprime que les membres simples (3)
+if ($userStat === 2 && (int)$m['numStat'] !== 3) {
+    $_SESSION['error_message'] = "Suppression interdite : un modérateur ne peut supprimer qu'un membre simple.";
+    header("Location: " . ROOT_URL . "/views/backend/members/list.php");
+    exit();
 }
 ?>
 
 
-<!-- Bootstrap form to create a new statut -->
-<link rel="stylesheet" href="/../../src/css/style.css">
+<link rel="stylesheet" href="/src/css/style.css">
 
 
 <div class="container">
@@ -31,37 +62,48 @@ if(isset($_GET['numMemb'])){
         <div class="col-md-12">
             <h1>Suppression du compte</h1>
         </div>
+
+
         <div class="col-md-12">
-            <!-- Form to create a new statut -->
-            <form action="<?php echo ROOT_URL . '/api/members/delete.php' ?>" method="post">
+            <!-- IMPORTANT : action RELATIVE pour garder la session -->
+            <form action="/api/members/delete.php" method="post">
+                <input type="hidden" name="numMemb" value="<?php echo (int)$m['numMemb']; ?>">
+
+
                 <div class="form-group">
-                    <label for="numMemb">Nom du compte</label>
-                    <input id="numMemb" name="numMemb" class="form-control" style="display: none" type="text" value="<?php echo($numMemb); ?>" readonly="readonly" />
-                    <input id="nomMemb" name="nomMemb" class="form-control" type="text" value="<?php echo($nomMemb); ?>" readonly="readonly" disabled />
+                    <label>Nom</label>
+                    <input class="form-control" type="text" value="<?php echo htmlspecialchars($m['nomMemb'] ?? ''); ?>" readonly disabled>
                 </div>
+
+
                 <div class="form-group">
-                    <label for="numMemb">Prenom du compte</label>
-                    <input id="prenomMemb" name="prenomMemb" class="form-control" type="text" value="<?php echo($prenomMemb); ?>" readonly="readonly" disabled />
+                    <label>Prénom</label>
+                    <input class="form-control" type="text" value="<?php echo htmlspecialchars($m['prenomMemb'] ?? ''); ?>" readonly disabled>
                 </div>
+
+
                 <div class="form-group">
-                    <label for="numMemb">Pseudo du compte</label>
-                    <input id="pseudoMemb" name="pseudoMemb" class="form-control" type="text" value="<?php echo($pseudoMemb); ?>" readonly="readonly" disabled />
+                    <label>Pseudo</label>
+                    <input class="form-control" type="text" value="<?php echo htmlspecialchars($m['pseudoMemb'] ?? ''); ?>" readonly disabled>
                 </div>
+
+
                 <div class="form-group">
-                    <label for="numMemb">Mot de passe</label>
-                    <input id="passMemb" name="passMemb" class="form-control" type="text" value="<?php echo($passMemb); ?>" readonly="readonly" disabled />
+                    <label>Email</label>
+                    <input class="form-control" type="text" value="<?php echo htmlspecialchars($m['eMailMemb'] ?? ''); ?>" readonly disabled>
                 </div>
-                <div class="form-group">
-                    <label for="numMemb">Mot de passe</label>
-                    <input id="eMailMemb" name="eMailMemb" class="form-control" type="text" value="<?php echo($eMailMemb); ?>" readonly="readonly" disabled />
-                </div>
+
+
                 <br />
+
+
                 <div class="form-group mt-2">
-                    <a href="list.php" class="btn btn-primary">List</a>
+                    <a href="<?php echo ROOT_URL . '/views/backend/members/list.php'; ?>" class="btn btn-primary">Liste</a>
                     <button type="submit" class="btn btn-danger">Confirmer delete ?</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
 

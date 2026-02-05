@@ -1,6 +1,21 @@
-    <?php
-    include '../../../header.php';
-    session_start();
+<?php
+
+include '../../../header.php';
+
+
+// Accès réservé admin (1) et modérateur (2)
+if (!isset($_SESSION['numStat']) || (int)$_SESSION['numStat'] > 2) {
+    header("Location: " . ROOT_URL . "/views/backend/security/login.php");
+    exit();
+}
+
+
+
+
+
+
+
+
     if (isset($_SESSION['error_message'])) {
         echo '<div style="
             background-color: #ffdddd;
@@ -16,12 +31,9 @@
     }
 
 
-    // Vérifie si l'utilisateur est connecté, sinon redirige vers la page de login
-    if (!isset($_SESSION['pseudoMemb'])) {
-    header("Location: " . ROOT_URL . "/views/backend/security/login.php");
-    exit();
-}
     ?>
+
+
 
 
     <!-- Bootstrap form to create a new motcle -->
@@ -66,14 +78,8 @@
                         <label for="numStat">Statut</label>
                         <select id="numStat" name="numStat" class="form-control">
                             <option value="3">Membre</option>
+                            <option value="2">Modérateur</option>
                         </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Acceptez-vous la conservation de vos données personnelles (RGPD) ?</label><br>
-                        <input type="radio" id="rgpd_oui" name="rgpd" value="oui" required>
-                        <label for="rgpd_oui">Oui</label>
-                        <input type="radio" id="rgpd_non" name="rgpd" value="non">
-                        <label for="rgpd_non">Non</label>
                     </div>
                     <br />
                     <div class="form-group mt-2">
@@ -84,3 +90,6 @@
             </div>
         </div>
     </div>
+
+
+

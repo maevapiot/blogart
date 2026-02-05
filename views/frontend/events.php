@@ -30,22 +30,22 @@ sql_connect();
 <style>
     /* Style du bandeau */
     .bandeau {
-      background-color: #7999D9; /* couleur de fond */
-      padding: 55px;              /* espace autour du texte */
-      color: white;              /* couleur du texte */
-      text-align: left;        /* centrer le texte */
-      font-size: 24px;           /* taille du texte */
-      font-weight: bold;         /* texte en gras */
+    background-color: #7999D9;
+    padding: 55px;
+    color: white;
+    text-align: left;
+    font-size: 24px;
+    font-weight: bold;
     height: 110px;
-    overflow: hidden;       /* Coupe ce qui dépasse */
-    position: relative;     /* Nécessaire pour le positionnement */
-    display: flex;                /* active flexbox */
+    overflow: hidden;
+    position: relative;
+    display: flex; 
     align-items: center;
     }
     #scroll-text {
-    display: inline-block;  /* Permet la transformation */
-    white-space: nowrap;    /* Empêche le texte de passer à la ligne */
-    will-change: transform; /* Optimise la fluidité de l'animation */
+    display: inline-block; 
+    white-space: nowrap;    
+    will-change: transform; 
     padding-left: 20px;
 }
     .top{
@@ -127,19 +127,25 @@ sql_connect();
     }
 </style>
 <body>
-    <div class="test">
+    <div class="container-général" style="padding: 20px;">
         <?php
             $evenements = sql_select("ARTICLE", "*", "numThem = 1"); // Supposons que les événements ont numThem = 1
             foreach ($evenements as $evenement) : ?>
-        <div class="gallerie">
-            <div class="gallerie-text">
-                <a href="articles/article1.php?idArt=$idArt" class="titre-lien"><h2 class="titre"><?php echo $evenement['libTitrArt']; ?></h2></a>
-                <p><?php echo $evenement['libChapoArt']; ?></p>
-                <h4><?php echo $evenement['dtCreaArt']; ?></h4>
-            </div>
-            <a href="articles/article1.php?idArt=<?= $evenement['numArt'] ?>" class="image-lien"><img src="../../src/uploads/<?php echo $evenement['urlPhotArt']; ?>" class="img-gallerie" alt="article"></a>
-        </div>
-
+                <a href="/views/frontend/articles/article1.php?idArt=<?php echo $evenement['numArt']; ?>" style="text-decoration: none; color: inherit;">
+                    <div class="card mb-3 mt-3" style="padding: 30px; border-radius: 25px; background-color: #ffffff; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                        <div class="row g-3">
+                            <div class="col-md-4" style="display: flex; justify-content: center; align-items: center;">
+                                <img src="../../src/uploads/<?php echo $evenement['urlPhotArt']; ?>" class="img-fluid rounded-start" alt="photo de l'article">
+                            </div>
+                                <div class="col-md-8">
+                    <div class="card-body">
+                        <h2 class="card-title"><?php echo $evenement['libTitrArt']; ?></h2>
+                        <p class="card-text"><?php echo $evenement['libChapoArt']; ?></p>
+                        <p class="card-text"><small class="text-body-secondary"><?php echo $evenement['dtCreaArt']; ?></small></p>
+                    </div>
+                    </div>
+                </div>
+</div>
     <?php endforeach; ?>
     </div>
     <p></p>

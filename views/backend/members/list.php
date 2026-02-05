@@ -2,6 +2,8 @@
 include '../../../header.php'; // contains the header and call to config.php
 
 
+
+
 // Vérifie si l'utilisateur est connecté, sinon redirige vers la page de login
 if (!isset($_SESSION['pseudoMemb'])) {
     header("Location: " . ROOT_URL . "/views/backend/security/login.php");
@@ -10,6 +12,8 @@ if (!isset($_SESSION['pseudoMemb'])) {
 //Load all statuts
 $membres = sql_select("membre", "*");
 ?>
+
+
 
 
 <!-- Bootstrap default layout to display all statuts in foreach -->
@@ -45,8 +49,17 @@ $membres = sql_select("membre", "*");
                             <td><?php echo $membre['dtCreaMemb']; ?></td>
                             <td>
                                 <a href="edit.php?numMemb=<?php echo $membre['numMemb']; ?>" class="btn btn-primary">Edit</a>
+
+
+                                <?php if ((int)$membre['numStat'] === 1) { ?>
+                                <!-- Admin : suppression interdite -->
+                                <button class="btn btn-danger" disabled>Delete</button>
+                                <?php } else { ?>
                                 <a href="delete.php?numMemb=<?php echo $membre['numMemb']; ?>" class="btn btn-danger">Delete</a>
+                                <?php } ?>
                             </td>
+
+
                         </tr>
                     <?php } ?>
                 </tbody>
