@@ -157,8 +157,14 @@ color: #111;
 </div>
 </div>
 </div>
+<form action="../../../api/comments/create.php?numArt=<?php echo $art['numArt']; ?>" method="post">
+                <textarea name= "libCom" placeholder= commentaires></textarea>
+                <input type=submit>
+        </form>
 </div>
+
 </section>
+
 
 <?php
 }
