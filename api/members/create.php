@@ -15,19 +15,62 @@ session_start();
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once '../../functions/ctrlSaisies.php';
 
-
-
-
-// Accès : admin (1) ou modérateur (2) seulement (back)
+// Accès : admin (1) ou modérateur (2) seulement
 if (!isset($_SESSION['numStat']) || (int)$_SESSION['numStat'] > 2) {
     header("Location: " . ROOT_URL . "/views/backend/security/login.php");
     exit();
 }
 
+/* =====================================
+   1) VÉRIFICATION reCAPTCHA v3
+   - Vérifie que le token reCAPTCHA est présent
+   - Envoie le token à Google pour validation
+   - Vérifie le score de confiance (>= 0.5 = humain)
+   ==================================== */
 
+// Vérifier que le token reCAPTCHA est présent
+if (!isset($_POST['g-recaptcha-response'])) {
+    $_SESSION['error_message'] = "Captcha manquant.";
+    header("Location: " . ROOT_URL . "/views/backend/members/create.php");
+    exit;
+}
 
+// Récupérer le token du formulaire
+$token = $_POST['g-recaptcha-response'];
 
+// Préparer la requête de vérification auprès de Google
+$url = 'https://www.google.com/recaptcha/api/siteverify';
+$data = [
+    'secret'   => getenv('RECAPTCHA_SECRET_KEY'),
+    'response' => $token
+];
 
+// Options pour la requête HTTP POST
+$options = [
+    'http' => [
+        'header'  => "Content-Type: application/x-www-form-urlencoded\r\n",
+        'method'  => 'POST',
+        'content' => http_build_query($data)
+    ]
+];
+
+// Envoyer la requête à Google et récupérer la réponse
+$context  = stream_context_create($options);
+$result   = file_get_contents($url, false, $context);
+$response = json_decode($result);
+
+// Vérifier le résultat de reCAPTCHA v3
+// Score entre 0.0 (bot) et 1.0 (humain)
+// Google recommande d'utiliser 0.5 comme seuil
+if (!$response->success || $response->score < 0.5) {
+    $_SESSION['error_message'] = "Échec du CAPTCHA - Score insuffisant.";
+    header("Location: " . ROOT_URL . "/views/backend/members/create.php");
+    exit;
+}
+
+/* =====================================
+   2) RÉCUPÉRATION DES DONNÉES
+===================================== */
 
 
 
@@ -153,9 +196,9 @@ $accordMemb = 1; // Back-office : on force l'accord (RGPD/consentement)
 
 // ==== INSÉRER ET CONTRÔLER LE RETOUR ====
 $ok = sql_insert(
-  'membre',
-  'nomMemb, prenomMemb, pseudoMemb, passMemb, eMailMemb, dtCreaMemb, numStat, accordMemb',
-  "'$nomMemb', '$prenomMemb', '$pseudoMemb', '$hashedPassMemb', '$eMailMemb', '$dtCreaMemb', $numStat, $accordMemb"
+    'membre',
+    'nomMemb, prenomMemb, pseudoMemb, passMemb, eMailMemb, dtCreaMemb, numStat, accordMemb',
+    "'$nomMemb', '$prenomMemb', '$pseudoMemb', '$hashedPassMemb', '$eMailMemb', '$dtCreaMemb', $numStat, $accordMemb"
 );
 
 

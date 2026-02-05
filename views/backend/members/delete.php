@@ -1,7 +1,5 @@
 <?php
 
-
-
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/ctrlSaisies.php';
 include $_SERVER['DOCUMENT_ROOT'] . '/header.php';
@@ -66,7 +64,7 @@ if ($userStat === 2 && (int)$m['numStat'] !== 3) {
 
         <div class="col-md-12">
             <!-- IMPORTANT : action RELATIVE pour garder la session -->
-            <form action="/api/members/delete.php" method="post">
+            <form id="form-recaptcha" action="/api/members/delete.php" method="post">
                 <input type="hidden" name="numMemb" value="<?php echo (int)$m['numMemb']; ?>">
 
 
@@ -99,11 +97,26 @@ if ($userStat === 2 && (int)$m['numStat'] !== 3) {
 
                 <div class="form-group mt-2">
                     <a href="<?php echo ROOT_URL . '/views/backend/members/list.php'; ?>" class="btn btn-primary">Liste</a>
-                    <button type="submit" class="btn btn-danger">Confirmer delete ?</button>
+                    <button
+                        class="btn btn-danger g-recaptcha"
+                        data-sitekey="<?php echo getenv('RECAPTCHA_SITE_KEY'); ?>"
+                        data-callback="onSubmit"
+                        data-action="submit"
+                    >
+                        Confirmer delete ?
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
+<!-- SCRIPT reCAPTCHA -->
+<script src="https://www.google.com/recaptcha/api.js"></script>
 
+<script>
+function onSubmit(token) {
+    document.getElementById("form-recaptcha").submit();
+    console.log(document.getElementById("form-recaptcha"));
+}
+</script>
