@@ -22,7 +22,11 @@ if (isset($_SESSION['error_message'])) {
 //    header("Location: " . ROOT_URL . "/views/backend/members/list.php");
 //    exit; }
 ?>
-
+<!-- ===================================
+     Formulaire de connexion avec reCAPTCHA v3
+     ID requis pour le callback JavaScript
+     ==================================== -->
+<form id="form-recaptcha" action="<?php echo ROOT_URL . '/api/security/login.php'; ?>" method="post">
 
 
 
@@ -43,14 +47,36 @@ if (isset($_SESSION['error_message'])) {
     <br><br>
 
 
-    <button type="submit" class="btn btn-primary">Se connecter</button>
-    
-    <p></p>
+    <!-- ===================================
+         Bouton reCAPTCHA v3
+         - data-sitekey : clé site reCAPTCHA
+         - data-callback : fonction JS appelée après validation
+         - data-action : action pour identifier le formulaire
+         ==================================== -->
+    <button
+        class="g-recaptcha"
+        data-sitekey="<?php echo getenv('RECAPTCHA_SITE_KEY'); ?>"
+        data-callback="onSubmit"
+        data-action="submit"
+    >
+        Se connecter
+    </button>
 </form>
 <h2>vous n'avez pas encore de compte?</h2>
     <a href="/views/backend/security/signup.php"><button class="btn btn-primary">créer un compte</button>
     <p></p>
 </div>
+<!-- ===================================
+     Callback JavaScript reCAPTCHA v3
+     Appelé automatiquement après validation
+     Soumet le formulaire avec le token
+     ==================================== -->
+<script>
+function onSubmit(token) {
+    document.getElementById("form-recaptcha").submit();
+    console.log(document.getElementById("form-recaptcha"));
+}
+</script>
 
 <!--modif milan debut-->
 <style>
