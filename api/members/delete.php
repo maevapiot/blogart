@@ -22,8 +22,48 @@ if (!isset($_SESSION['pseudoMemb']) || !in_array($userStat, [1, 2], true)) {
     exit();
 }
 
+/* =====================================
+   1) VÉRIFICATION reCAPTCHA (CdC 2)
+===================================== */
+if (!isset($_POST['g-recaptcha-response'])) {
+    $_SESSION['error_message'] = "Captcha manquant.";
+    header("Location: " . ROOT_URL . "/views/backend/members/delete.php?numMemb=" . ($_POST['numMemb'] ?? 0));
+    exit;
+}
 
-// ID membre à supprimer (POST)
+$token = $_POST['g-recaptcha-response'];
+
+$url = 'https://www.google.com/recaptcha/api/siteverify';
+$data = [
+    'secret'   => getenv('RECAPTCHA_SECRET_KEY'),
+    'response' => $token
+];
+
+$options = [
+    'http' => [
+        'header'  => "Content-Type: application/x-www-form-urlencoded\r\n",
+        'method'  => 'POST',
+        'content' => http_build_query($data)
+    ]
+];
+
+$context  = stream_context_create($options);
+$result   = file_get_contents($url, false, $context);
+$response = json_decode($result);
+
+/*
+- score >= 0.5 → humain
+- score < 0.5  → robot
+*/
+if (!$response->success || $response->score < 0.5) {
+    $_SESSION['error_message'] = "Échec du CAPTCHA.";
+    header("Location: " . ROOT_URL . "/views/backend/members/delete.php?numMemb=" . ($_POST['numMemb'] ?? 0));
+    exit;
+}
+
+/* =====================================
+   2) RÉCUPÉRATION DES DONNÉES
+===================================== */
 $numMemb = isset($_POST['numMemb']) ? (int)$_POST['numMemb'] : 0;
 if ($numMemb <= 0) {
     $_SESSION['error_message'] = "ID membre invalide.";
