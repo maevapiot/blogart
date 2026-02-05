@@ -157,8 +157,10 @@ color: #111;
 </div>
 </div>
 </div>
-<form action="../../../api/comments/create.php?numArt=<?php echo $art['numArt']; ?>" method="post">
-                <textarea name= "libCom" placeholder= commentaires></textarea>
+<form action="../../../api/comments/create.php" method="post">
+                <textarea name= "libCom" placeholder= "commentaires"></textarea>
+                <input type="hidden" name="numArt" value="<?php echo $art['numArt']; ?>">
+                <input type="hidden" name="numMemb" value="<?php echo $_SESSION['numMemb'] ?? 0; ?>">
                 <input type=submit>
         </form>
 </div>
