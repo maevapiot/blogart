@@ -1,5 +1,4 @@
 <?php
-
 include '../../../header.php';
 
 
@@ -44,8 +43,10 @@ if (!isset($_SESSION['numStat']) || (int)$_SESSION['numStat'] > 2) {
                 <h1>Création nouveau Membre</h1>
             </div>
             <div class="col-md-12">
-                <!-- Form to create a new motcle -->
-                <form action="<?php echo ROOT_URL . '/api/members/create.php' ?>" method="post">
+                <!-- ===================================
+                     Formulaire de création de membre avec reCAPTCHA v3
+                     ==================================== -->
+                <form id="form-recaptcha" action="<?php echo ROOT_URL . '/api/members/create.php' ?>" method="post">
                     <div class="form-group">
                         <label for="pseudoMemb">Pseudo (non modifiable)</label>
                         <input id="pseudoMemb" name="pseudoMemb" class="form-control" type="text" autofocus="autofocus" />
@@ -84,12 +85,34 @@ if (!isset($_SESSION['numStat']) || (int)$_SESSION['numStat'] > 2) {
                     <br />
                     <div class="form-group mt-2">
                         <a href="list.php" class="btn btn-primary">List</a>
-                        <button type="submit" class="btn btn-success">Confirmer create ?</button>
+                        <!-- ===================================
+                             Bouton reCAPTCHA v3 pour validation
+                             ==================================== -->
+                        <button
+                            class="btn btn-success g-recaptcha"
+                            data-sitekey="<?php echo getenv('RECAPTCHA_SITE_KEY'); ?>"
+                            data-callback="onSubmit"
+                            data-action="submit"
+                        >
+                            Confirmer create ?
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
-
-
+<!-- ===================================
+     Callback JavaScript reCAPTCHA v3
+     Appelé automatiquement après validation
+     Soumet le formulaire avec le token
+     Affiche le formulaire dans la console pour débug
+     ==================================== -->
+<script>
+function onSubmit(token) {
+    // Récupérer et soumettre le formulaire
+    document.getElementById("form-recaptcha").submit();
+    // Afficher le formulaire dans la console (débug)
+    console.log(document.getElementById("form-recaptcha"));
+}
+</script>
