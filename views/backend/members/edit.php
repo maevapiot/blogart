@@ -1,6 +1,5 @@
 <?php
 
-
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/ctrlSaisies.php';
 include $_SERVER['DOCUMENT_ROOT'] . '/header.php';
@@ -82,7 +81,10 @@ if ($userStat === 2 && (int)$m['numStat'] !== 3) {
 
     <div class="col-md-12 mt-3">
       <!-- IMPORTANT : action RELATIVE pour garder la session -->
-      <form action="/api/members/update.php" method="post">
+      <!-- ===================================
+           Formulaire de modification de membre avec reCAPTCHA v3
+           ==================================== -->
+      <form id="form-recaptcha" action="/api/members/update.php" method="post">
         <input type="hidden" name="numMemb" value="<?php echo (int)$m['numMemb']; ?>">
 
 
@@ -169,7 +171,17 @@ if ($userStat === 2 && (int)$m['numStat'] !== 3) {
 
         <div class="form-group mt-2">
           <a href="<?php echo ROOT_URL . '/views/backend/members/list.php'; ?>" class="btn btn-primary">Liste</a>
-          <button type="submit" class="btn btn-success">Confirmer la modification ?</button>
+          <!-- ===================================
+               Bouton reCAPTCHA v3 pour validation
+               ==================================== -->
+          <button
+            class="btn btn-success g-recaptcha"
+            data-sitekey="<?php echo getenv('RECAPTCHA_SITE_KEY'); ?>"
+            data-callback="onSubmit"
+            data-action="submit"
+          >
+            Confirmer la modification ?
+          </button>
         </div>
 
 
@@ -178,3 +190,17 @@ if ($userStat === 2 && (int)$m['numStat'] !== 3) {
   </div>
 </div>
 
+<!-- ===================================
+     Callback JavaScript reCAPTCHA v3
+     Appelé automatiquement après validation
+     Soumet le formulaire avec le token
+     Affiche le formulaire dans la console pour débug
+     ==================================== -->
+<script>
+function onSubmit(token) {
+    // Récupérer et soumettre le formulaire
+    document.getElementById("form-recaptcha").submit();
+    // Afficher le formulaire dans la console (débug)
+    console.log(document.getElementById("form-recaptcha"));
+}
+</script>
