@@ -248,5 +248,6 @@ const rotation = window.scrollY / 4;
 badge.style.transform = `rotate(${rotation}deg)`;
 });
 </script>
+<p>ca marche</p>
 
 <?php require_once 'footer.php'; ?>
