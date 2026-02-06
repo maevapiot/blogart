@@ -1,16 +1,6 @@
 <?php
 
-
-
-
 session_start();
-
-
-
-
-
-
-
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once '../../functions/ctrlSaisies.php';
@@ -21,12 +11,11 @@ if (!isset($_SESSION['numStat']) || (int)$_SESSION['numStat'] > 2) {
     exit();
 }
 
-/* =====================================
+/*
    1) VÉRIFICATION reCAPTCHA v3
-   - Vérifie que le token reCAPTCHA est présent
-   - Envoie le token à Google pour validation
-   - Vérifie le score de confiance (>= 0.5 = humain)
-   ==================================== */
+   Vérifie que le token reCAPTCHA est présent, Envoie le token à Google pour validation,
+   Vérifie le score de confiance (>= 0.5 = humain)
+  */
 
 // Vérifier que le token reCAPTCHA est présent
 if (!isset($_POST['g-recaptcha-response'])) {
@@ -68,9 +57,7 @@ if (!$response->success || $response->score < 0.5) {
     exit;
 }
 
-/* =====================================
-   2) RÉCUPÉRATION DES DONNÉES
-===================================== */
+/* 2) RÉCUPÉRATION DES DONNÉES */
 
 
 
@@ -83,15 +70,6 @@ $eMailMemb2 = ctrlSaisies($_POST['eMailMemb2'] ?? '');
 $passMemb   = ctrlSaisies($_POST['passMemb'] ?? '');
 $passMemb2  = ctrlSaisies($_POST['passMemb2'] ?? '');
 $numStat    = (int) ($_POST['numStat'] ?? 3); // par défaut 3 si absent
-
-
-
-
-// ==== DEBUG (temporaire) ====
-// Décommente ces lignes pour voir exactement ce qui est POSTé et arrêter le script.
-// var_dump($_POST);
-// exit;
-// ============================
 
 
 
