@@ -3,7 +3,7 @@ session_start();
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once '../../functions/ctrlSaisies.php';
 
-// ON SÉCURISE LES ENTRÉES AVEC ADDSLASHES
+
 $libTitrArt    = addslashes($_POST['libTitrArt']);
 $libChapoArt   = addslashes($_POST['libChapoArt']);
 $libAccrochArt = addslashes($_POST['libAccrochArt']);
@@ -17,7 +17,7 @@ $libConclArt   = addslashes($_POST['libConclArt']);
 $dtCreaArt = date("Y-m-d H:i:s");
 $numThem   = $_POST['numThem'];
 
-// --- GESTION DE L'IMAGE ---
+
 if (!isset($_FILES["image"])) {
     die("Aucun fichier reçu");
 }
@@ -42,16 +42,16 @@ if ($size > 10000000) {
 }
 
 $extension = pathinfo($name, PATHINFO_EXTENSION);
-$nomImage  = uniqid() . "." . $extension; // Plus propre de garder juste l'ID unique
+$nomImage  = uniqid() . "." . $extension; 
 
-// J'ai rajouté le "/" manquant après uploads
+
 $chemin = "../../src/uploads/" . $nomImage;
 
 if (!move_uploaded_file($tmp_name, $chemin)) {
     die("Erreur déplacement fichier");
 }
 
-// --- INSERTION SQL ---
+//INSERTION SQL 
 sql_insert(
    'ARTICLE',
    'libTitrArt, dtCreaArt, libChapoArt, libAccrochArt,

@@ -5,7 +5,7 @@ require_once '../../functions/ctrlSaisies.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['numArt'])) {
     $numArt = ctrlSaisies($_POST['numArt']);
     
-    // On récupère libChapoArt (le textarea nommé libChapoArt dans le formulaire)
+    // On récupère libChapoArt 
     $libTitrArt    = addslashes(ctrlSaisies($_POST['libTitrArt']));
     $libChapoArt   = addslashes(ctrlSaisies($_POST['libChapoArt'])); 
     $libAccrochArt = addslashes(ctrlSaisies($_POST['libAccrochArt']));

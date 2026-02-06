@@ -3,7 +3,7 @@ require_once 'header.php';
 sql_connect();
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 
-// Récupération des 3 derniers articles
+// 3 derniers articles
 $latestArticles = sql_select("ARTICLE", "*", "1=1 ORDER BY dtCreaArt DESC LIMIT 3");
 ?>
 
@@ -149,7 +149,7 @@ max-width: 100%;
 .pink-fade-text { color: #fce4f4; }
 .hero-subtitle { max-width: 800px; font-size: 1.2rem; color: #fff; margin-top: 25px; font-family: 'Inter', sans-serif; }
 .hero-date { font-weight: bold; font-size: 1.3rem; color: #fff; margin-top: 15px; font-family: 'Inter', sans-serif; }
-/* --- TRANSITION ROSE (ZOOMÉE) --- */
+/* --- TRANSITION ROSE  --- */
 .news-transition {
 background-color: #fce4f4;
 margin-top: -100px;
