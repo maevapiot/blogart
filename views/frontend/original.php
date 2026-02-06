@@ -107,7 +107,7 @@ body {
                 <h1 class="titre-section-insolite">INSOLITE</h1>
             </div>
         </div>
-
+    <a href="/views/frontend/articles/article1.php?idArt=<?php echo $article['numArt']; ?>" style="text-decoration: none; color: inherit;">
         <div class="row article-card-premium g-0 align-items-stretch">
             <div class="col-lg-5 p-0">
                 <img src="<?php echo $lienImage; ?>" class="article-image-premium" alt="Image article">
@@ -116,27 +116,14 @@ body {
             <div class="col-lg-7">
                 <div class="content-padding">
                     <h2 class="sous-titre-article-premium"><?php echo htmlspecialchars($article['libTitrArt']); ?></h2>
-                    
                     <div class="texte-chapo-premium"><?php echo nl2br(htmlspecialchars($article['libChapoArt'])); ?></div>
-
-                    <?php if(!empty($article['libAccrochArt'])) { ?>
-                        <div class="texte-accroche-premium">“<?php echo nl2br(htmlspecialchars($article['libAccrochArt'])); ?>”</div>
-                    <?php } ?>
-
-                    <div class="texte-paragraphe-premium"><?php echo nl2br(htmlspecialchars($article['parag1Art'])); ?></div>
-
-                    <?php if(!empty($article['libSsTitr1Art'])) { ?>
-                        <h3 class="texte-intertitre-premium"><?php echo htmlspecialchars($article['libSsTitr1Art']); ?></h3>
-                    <?php } ?>
-                    <div class="texte-paragraphe-premium"><?php echo nl2br(htmlspecialchars($article['parag2Art'])); ?></div>
-
-                    <div class="texte-paragraphe-premium fw-bold mt-4" style="color: #0056b3; font-weight:700;">
-                        <?php echo nl2br(htmlspecialchars($article['libConclArt'])); ?>
+                    <p class="texte-paragraphe-premium"><?php echo($article['dtCreaArt']); ?></p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+                    </a>
 </section>
 
 <?php 

@@ -1,10 +1,10 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
-startSession();
+session_start();
 
 // Vérifier que l'utilisateur est connecté
 if (!isset($_SESSION['user_id'])) {
-    setFlashMessage('error', 'Vous devez être connecté pour liker un article.');
+    echo('Vous devez être connecté pour liker un article.');
     header('Location: ' . ROOT_URL . '/views/backend/security/login.php');
     exit;
 }
@@ -16,7 +16,7 @@ $redirect = isset($_GET['redirect']) ? $_GET['redirect'] : (isset($_POST['redire
 
 // Validation
 if ($numArt <= 0) {
-    setFlashMessage('error', 'Article non spécifié.');
+    echo('Article non spécifié.');
     header('Location: ' . $redirect);
     exit;
 }
@@ -24,7 +24,7 @@ if ($numArt <= 0) {
 // Vérifier que l'article existe
 $article = sql_select("ARTICLE", "*", "numArt = $numArt");
 if (empty($article)) { // empty c'est pour vérifier si la variable est vide
-    setFlashMessage('error', 'Article introuvable.');
+    echo('Article introuvable.');
     header('Location: ' . $redirect); 
     exit;
 }
@@ -47,7 +47,7 @@ if (!empty($existingLike)) {
             }
         }
     } catch (Exception $e) {
-        setFlashMessage('error', 'Erreur lors de la mise à jour du like.');
+        echo('Erreur lors de la mise à jour du like.');
     }
 } else {
     // Créer un nouveau like
@@ -55,12 +55,12 @@ if (!empty($existingLike)) {
         $result = sql_insert('LIKEART', 'numMemb, numArt, likeA', "$numMemb, $numArt, 1");
         
         if ($result) {
-            setFlashMessage('success', 'Vous avez liké cet article.');
+            echo('Vous avez liké cet article.');
         } else {
-            setFlashMessage('error', 'Erreur lors du like.');
+            echo('Erreur lors du like.');
         }
     } catch (Exception $e) {
-        setFlashMessage('error', 'Erreur lors du like : ' . $e->getMessage());
+        echo('Erreur lors du like : ' . $e->getMessage());
     }
 }
 
