@@ -21,7 +21,7 @@
            <a href="">Mentions légales</a>
            <a href="">Contact</a>
            <a href="">Politique de confidentialité</a>
-           <a href="">CGU</a>
+           <a href="/views/frontend/rgpd/cgu.php">CGU</a>
        </div>
 
 
