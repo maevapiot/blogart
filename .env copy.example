@@ -1,0 +1,12 @@
+#SQL
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=root
+DB_DATABASE=blogart
+
+#APP SETTINGS
+APP_DEBUG=true
+
+#RECAPTCHA v3
+RECAPTCHA_SITE_KEY=your_site_key_here
+RECAPTCHA_SECRET_KEY=your_secret_key_here
