@@ -25,7 +25,7 @@ sql_connect();
 </body>
 <title>Bandeau avec texte</title>
     <div class="bandeau">
-        <span id="scroll-text"><h2>XX ÉVÉNEMENTS XX</h2></span>
+        <span id="scroll-text"><p style="font-family: 'montserrat'; color: white; font-size: 40px">XX ÉVÉNEMENTS XX</p></span>
     </div>
 <style>
     /* Style du bandeau */
