@@ -1,8 +1,6 @@
 <?php
 include '../../../header.php';
 
-echo ("Edit Statut à faire");
-
 if(isset($_GET['numStat'])){
     $numStat = $_GET['numStat'];
     $libStat = sql_select("STATUT", "libStat", "numStat = $numStat")[0]['libStat'];

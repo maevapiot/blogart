@@ -4,16 +4,15 @@ session_start();
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once '../../functions/ctrlSaisies.php';
 
-// Accès : admin (1) ou modérateur (2) seulement
+// Check droits : Admin (1) ou Modo (2)
 if (!isset($_SESSION['numStat']) || (int)$_SESSION['numStat'] > 2) {
     header("Location: " . ROOT_URL . "/views/backend/security/login.php");
     exit();
 }
 
-/* =====================================
-   1) VÉRIFICATION reCAPTCHA v3
-   ==================================== */
-
+/* ------------------------------------------------------
+   1) ReCAPTCHA
+------------------------------------------------------ */
 if (!isset($_POST['g-recaptcha-response'])) {
     $_SESSION['error_message'] = "Captcha manquant.";
     header("Location: " . ROOT_URL . "/views/backend/members/create.php");
@@ -45,10 +44,9 @@ if (!$response->success || $response->score < 0.5) {
     exit;
 }
 
-/* =====================================
-   2) RÉCUPÉRATION DES DONNÉES
-===================================== */
-
+/* ------------------------------------------------------
+   2) Saisies & Validations
+------------------------------------------------------ */
 $nomMemb    = ctrlSaisies($_POST['nomMemb'] ?? '');
 $prenomMemb = ctrlSaisies($_POST['prenomMemb'] ?? '');
 $pseudoMemb = ctrlSaisies($_POST['pseudoMemb'] ?? '');
@@ -56,60 +54,55 @@ $eMailMemb  = ctrlSaisies($_POST['eMailMemb'] ?? '');
 $eMailMemb2 = ctrlSaisies($_POST['eMailMemb2'] ?? '');
 $passMemb   = ctrlSaisies($_POST['passMemb'] ?? '');
 $passMemb2  = ctrlSaisies($_POST['passMemb2'] ?? '');
-$numStat    = (int) ($_POST['numStat'] ?? 3); 
+$numStat    = (int)($_POST['numStat'] ?? 3); 
 
-// Vérifier le pseudo
+// Pseudo (6-70 chars)
 if (!preg_match('/^.{6,70}$/', $pseudoMemb)) {
     $_SESSION['error_message'] = "Le pseudo doit contenir entre 6 et 70 caractères.";
     header('Location: ' . $_SERVER['HTTP_REFERER']);
     exit;
 }
 
-// Vérifier doublon pseudo
+// Unicité Pseudo
 if (sql_select('membre', 'pseudoMemb', "pseudoMemb = '$pseudoMemb'")) {
-    $_SESSION['error_message'] = "Ce pseudo est déjà utilisé. Veuillez en choisir un autre.";
+    $_SESSION['error_message'] = "Ce pseudo est déjà utilisé.";
     header('Location: ' . $_SERVER['HTTP_REFERER']);
     exit;
 }
 
-// Vérifier champs obligatoires
-if (empty($prenomMemb)) {
-    $_SESSION['error_message'] = "Veuillez renseigner un prénom.";
-    header('Location: ' . $_SERVER['HTTP_REFERER']);
-    exit;
-}
-if (empty($nomMemb)) {
-    $_SESSION['error_message'] = "Veuillez renseigner un nom.";
+// Champs requis
+if (empty($prenomMemb) || empty($nomMemb)) {
+    $_SESSION['error_message'] = "Nom et prénom obligatoires.";
     header('Location: ' . $_SERVER['HTTP_REFERER']);
     exit;
 }
 
-// Vérifier emails
+// Emails
 if (!filter_var($eMailMemb, FILTER_VALIDATE_EMAIL) || !filter_var($eMailMemb2, FILTER_VALIDATE_EMAIL)) {
-    $_SESSION['error_message'] = "Une ou plusieurs adresses email ne sont pas valides.";
+    $_SESSION['error_message'] = "Email invalide.";
     header('Location: ' . $_SERVER['HTTP_REFERER']);
     exit;
 }
 if ($eMailMemb !== $eMailMemb2) {
-    $_SESSION['error_message'] = "Les deux adresses email ne correspondent pas.";
+    $_SESSION['error_message'] = "Les emails ne correspondent pas.";
     header('Location: ' . $_SERVER['HTTP_REFERER']);
     exit;
 }
 
-// Vérifier Mot de passe (Regex CDC)
+// Mots de passe
 $passwordPattern = "/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,15}$/";
 if (!preg_match($passwordPattern, $passMemb) || !preg_match($passwordPattern, $passMemb2)) {
-    $_SESSION['error_message'] = "Mot de passe non conforme (8-15 caractères, 1 majuscule, 1 minuscule, 1 chiffre).";
+    $_SESSION['error_message'] = "Mot de passe non conforme (8-15 car, Maj, min, chiffre).";
     header('Location: ' . $_SERVER['HTTP_REFERER']);
     exit;
 }
 if ($passMemb !== $passMemb2) {
-    $_SESSION['error_message'] = "Les deux mots de passe ne correspondent pas.";
+    $_SESSION['error_message'] = "Les mots de passe ne correspondent pas.";
     header('Location: ' . $_SERVER['HTTP_REFERER']);
     exit;
 }
 
-// Sécurisation statut
+// Sécurité Statut (Modo ne peut pas créer d'Admin)
 if (!in_array($numStat, [2, 3], true)) {
     $_SESSION['error_message'] = "Statut invalide.";
     header('Location: ' . $_SERVER['HTTP_REFERER']);
@@ -119,17 +112,15 @@ if ((int)($_SESSION['numStat'] ?? 0) === 2) {
     $numStat = 3;
 }
 
+/* ------------------------------------------------------
+   3) Insertion
+------------------------------------------------------ */
 $dtCreaMemb = date("Y-m-d H:i:s");
 $accordMemb = 1; 
 
-// -----------------------------------------------------------
-// MODIFICATION ICI : ACTIVATION DU HACHAGE
-// -----------------------------------------------------------
-// On crypte le mot de passe avant de l'envoyer
+// Hashage
 $hashedPassMemb = password_hash($passMemb, PASSWORD_DEFAULT);
 
-
-// ==== INSERTION ====
 $ok = sql_insert(
     'membre',
     'nomMemb, prenomMemb, pseudoMemb, passMemb, eMailMemb, dtCreaMemb, numStat, accordMemb',
@@ -137,7 +128,7 @@ $ok = sql_insert(
 );
 
 if (!$ok) {
-    $_SESSION['error_message'] = "Erreur : l'insertion a échoué.";
+    $_SESSION['error_message'] = "Erreur SQL lors de l'insertion.";
     header('Location: ' . $_SERVER['HTTP_REFERER']);
     exit;
 }
