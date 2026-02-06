@@ -1,20 +1,13 @@
 <?php
-
-
-
-
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/ctrlSaisies.php';
 
 
-/**
- * Autoriser uniquement admin (1) ou modérateur (2)
- */
+
 $userStat = (int)($_SESSION['numStat'] ?? 0);
 if (!isset($_SESSION['pseudoMemb']) || !in_array($userStat, [1, 2], true)) {
     $_SESSION['error_message'] = "Accès refusé : veuillez vous connecter avec un compte admin/modérateur.";
@@ -22,17 +15,16 @@ if (!isset($_SESSION['pseudoMemb']) || !in_array($userStat, [1, 2], true)) {
     exit();
 }
 
-/* =====================================
-   1) VÉRIFICATION reCAPTCHA (CdC 2)
-===================================== */
+$numMemb = isset($_POST['numMemb']) ? (int)$_POST['numMemb'] : 0;
+
 if (!isset($_POST['g-recaptcha-response'])) {
     $_SESSION['error_message'] = "Captcha manquant.";
-    header("Location: " . ROOT_URL . "/views/backend/members/delete.php?numMemb=" . ($_POST['numMemb'] ?? 0));
+   
+    header("Location: " . ROOT_URL . "/views/backend/members/list.php");
     exit;
 }
 
 $token = $_POST['g-recaptcha-response'];
-
 $url = 'https://www.google.com/recaptcha/api/siteverify';
 $data = [
     'secret'   => getenv('RECAPTCHA_SECRET_KEY'),
@@ -51,26 +43,18 @@ $context  = stream_context_create($options);
 $result   = file_get_contents($url, false, $context);
 $response = json_decode($result);
 
-/*
-- score >= 0.5 → humain
-- score < 0.5  → robot
-*/
 if (!$response->success || $response->score < 0.5) {
-    $_SESSION['error_message'] = "Échec du CAPTCHA.";
-    header("Location: " . ROOT_URL . "/views/backend/members/delete.php?numMemb=" . ($_POST['numMemb'] ?? 0));
+    $_SESSION['error_message'] = "Échec du CAPTCHA (Score insuffisant).";
+    header("Location: " . ROOT_URL . "/views/backend/members/list.php");
     exit;
 }
 
-/* =====================================
-   2) RÉCUPÉRATION DES DONNÉES
-===================================== */
-$numMemb = isset($_POST['numMemb']) ? (int)$_POST['numMemb'] : 0;
+
 if ($numMemb <= 0) {
     $_SESSION['error_message'] = "ID membre invalide.";
     header("Location: " . ROOT_URL . "/views/backend/members/list.php");
     exit();
 }
-
 
 // Vérifier existence + statut cible
 $res = sql_select('membre', 'numMemb, numStat', "numMemb = $numMemb");
@@ -80,49 +64,44 @@ if (!$res || !isset($res[0]['numMemb'])) {
     exit();
 }
 
-
 $targetStat = (int)$res[0]['numStat'];
 
-
-// Interdire suppression admin cible
+// Règle 1 : Personne ne touche à un Admin (1)
 if ($targetStat === 1) {
-    $_SESSION['error_message'] = "Suppression interdite : le compte administrateur ne peut pas être supprimé.";
+    $_SESSION['error_message'] = "Suppression interdite : le compte administrateur est protégé.";
     header("Location: " . ROOT_URL . "/views/backend/members/list.php");
     exit();
 }
 
-
-/* AJOUT : message spécifique si un MODÉRATEUR (2) tente de supprimer un autre MODÉRATEUR (2)
-   Pourquoi : tu veux un message plus clair que le message générique "membre simple". */
+// Règle 2 : Un Modérateur (2) ne touche pas à un autre Modérateur (2)
 if ($userStat === 2 && $targetStat === 2) {
-    $_SESSION['error_message'] = "Suppression interdite : un modérateur ne peut pas supprimer un autre modérateur.";
+    $_SESSION['error_message'] = "Suppression interdite : un modérateur ne peut pas supprimer un collègue modérateur.";
     header("Location: " . ROOT_URL . "/views/backend/members/list.php");
     exit();
 }
 
-
-// Si modo -> ne supprime que membres simples
+// Règle 3 : Un Modérateur (2) ne touche qu'aux Membres (3)
 if ($userStat === 2 && $targetStat !== 3) {
-    $_SESSION['error_message'] = "Suppression interdite : un modérateur ne peut supprimer qu'un membre simple.";
+    $_SESSION['error_message'] = "Suppression interdite : droits insuffisants.";
     header("Location: " . ROOT_URL . "/views/backend/members/list.php");
     exit();
 }
 
 
-// Suppression dépendances puis membre
+
 sql_delete('comment', "numMemb = $numMemb");
 sql_delete('likeart', "numMemb = $numMemb");
 
 
+// On supprime le membre
 $ok = sql_delete('membre', "numMemb = $numMemb");
 
-
 if ($ok) {
-    $_SESSION['success_message'] = "Membre supprimé avec succès.";
+    $_SESSION['success_message'] = "Membre et ses données associées supprimés avec succès.";
 } else {
-    $_SESSION['error_message'] = "Erreur : suppression échouée (contrainte SQL ?).";
+    $_SESSION['error_message'] = "Erreur SQL : Impossible de supprimer le membre (Vérifiez s'il a écrit des articles ?).";
 }
-
 
 header("Location: " . ROOT_URL . "/views/backend/members/list.php");
 exit();
+?>
