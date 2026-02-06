@@ -112,22 +112,33 @@ color: #111;
 .image-col, .content-col { flex: 0 0 100%; max-width: 100%; }
 .article-image-premium { height: auto; max-height: 400px; }
 }
-.heart-btn {
-    background: none;
+.commentaire-form textarea {
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    font-size: 1rem;
+    font-family: 'Montserrat', sans-serif;
+    resize: vertical;
+    min-height: 80px;
+    transition: border 0.2s, box-shadow 0.2s;
+}
+.commentaire-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+.commentaire-form button {
+    align-self: flex-end;
+    padding: 10px 22px;
     border: none;
-    font-size: 2.3rem;
+    border-radius: 12px;
+    background-color: #e63946;
+    color: #fff;
+    font-weight: 600;
     cursor: pointer;
-    transition: 0.25s ease;
-    padding: 5px;
-}
-
-.heart-btn:hover {
-    transform: scale(1.15);
-}
-
-.heart-btn.liked {
-    color: #e63946;
-    transform: scale(1.1);
+    font-size: 1rem;
+    transition: background 0.2s, transform 0.2s;
 }
 </style>
 
@@ -175,11 +186,11 @@ color: #111;
 </div>
 </div>
         <section class="Interactions" style= "display: flex">
-            <div class="container-central" style= "display :flex; flex-direction: column; gap: 2rem;">
+            <div class="container-central" style= "display :flex; flex-direction: column; padding: 20px;">
                 <div class="commentaires">
                     <div class="commentaire-form">
-                        <form action="../../../api/comments/create.php" method="post">
-                            <textarea name="libCom" placeholder="commentaires" style= "border:none;"></textarea>
+                        <form class="commentaire-form" action="../../../api/comments/create.php" method="post">
+                            <textarea name="libCom" placeholder="commentaires"></textarea>
                             <input type="hidden" name="numArt" value="<?php echo $art['numArt']; ?>">
                             <input type="hidden" name="numMemb" value="<?php echo $_SESSION['numMemb'] ?? 0; ?>">
                             <input type="submit">
