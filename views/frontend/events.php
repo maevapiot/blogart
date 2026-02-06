@@ -110,7 +110,7 @@ sql_connect();
     p{
     font-size: 22px;
     font-family: montserrat, sans-serif;
-    font-weight: medium;
+    font-weight: bold;
     color: #212121;
     }
     h2{
@@ -132,7 +132,7 @@ sql_connect();
             $evenements = sql_select("ARTICLE", "*", "numThem = 1"); // Supposons que les événements ont numThem = 1
             foreach ($evenements as $evenement) : ?>
                 <a href="/views/frontend/articles/article1.php?idArt=<?php echo $evenement['numArt']; ?>" style="text-decoration: none; color: inherit;">
-                    <div class="card mb-3 mt-3" style="padding: 30px; border-radius: 25px; background-color: #ffffff; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                    <div class="card mb-3 mt-3" style="padding: 30px; border-radius: 25px; background-color: #ffffff; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); border: none;">
                         <div class="row g-3">
                             <div class="col-md-4" style="display: flex; justify-content: center; align-items: center;">
                                 <img src="../../src/uploads/<?php echo $evenement['urlPhotArt']; ?>" class="img-fluid rounded-start" alt="photo de l'article">
@@ -140,7 +140,7 @@ sql_connect();
                                 <div class="col-md-8">
                     <div class="card-body">
                         <h2 class="card-title"><?php echo $evenement['libTitrArt']; ?></h2>
-                        <p class="card-text"><?php echo $evenement['libChapoArt']; ?></p>
+                        <p class="card-text" style="color: #0056b3; font-size: 1.1rem;"><?php echo $evenement['libChapoArt']; ?></p>
                         <p class="card-text"><small class="text-body-secondary"><?php echo $evenement['dtCreaArt']; ?></small></p>
                     </div>
                     </div>
