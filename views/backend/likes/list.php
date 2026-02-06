@@ -1,14 +1,5 @@
 <?php
 include '../../../header.php';
-startSession();
-
-// Vérifier les droits d'accès
-if (!isset($_SESSION['user_id']) || $_SESSION['user_statut'] > 2) {
-    setFlashMessage('error', 'Accès non autorisé.');
-    header('Location: ' . ROOT_URL . '/views/backend/security/login.php');
-    exit;
-}
-
 // Charger tous les likes avec articles et membres
 $likes = sql_select(
     "LIKEART l LEFT JOIN ARTICLE a ON l.numArt = a.numArt LEFT JOIN MEMBRE m ON l.numMemb = m.numMemb",
@@ -33,8 +24,6 @@ $statsParArticle = sql_select(
         <div class="col-md-12">
             <h1>Gestion des Likes</h1>
             <hr>
-            
-            <?php displayFlashMessage(); ?>
             
             <div class="mb-3">
                 <a href="../dashboard.php" class="btn btn-secondary">Retour Dashboard</a>
