@@ -69,11 +69,11 @@ if (!isset($_SESSION['numStat']) || (int)$_SESSION['numStat'] > 2) {
                     </div>
                     <div class="form-group">
                         <label for="passMemb">Mot de Passe</label>
-                        <input id="passMemb" name="passMemb" class="form-control" type="text" autofocus="autofocus" />
+                        <input id="passMemb" name="passMemb" class="form-control" type="password" autofocus="autofocus" />
                     </div>
                     <div class="form-group">
                         <label for="passMemb2">Confirmez le Mot de Passe</label>
-                        <input id="passMemb2" name="passMemb2" class="form-control" type="text" autofocus="autofocus" />
+                        <input id="passMemb2" name="passMemb2" class="form-control" type="password" autofocus="autofocus" />
                     </div>
                     <div class="form-group">
                         <label for="numStat">Statut</label>
