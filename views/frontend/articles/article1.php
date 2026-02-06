@@ -211,32 +211,46 @@ color: #111;
                         </div>
                     </div>
                     <div class="likes">
-                        <?php
-                            $LikeActif = sql_select("LIKEART", "*", "numArt = {$art['numArt']} AND numMemb = " . ($_SESSION['numMemb'] ?? 0));
-                            $liked = (!empty($LikeActif) && $LikeActif[0]['likeA'] == 1);
-                        ?>
-                        </form>
-                            <?php $numMemb = $_SESSION['numMemb'] ?? 0;
-                                $LikeActif = sql_select("LIKEART", "*", "numArt = {$art['numArt']} AND numMemb = " . $numMemb);
-                                $liked = (!empty($LikeActif) && isset($LikeActif[0]['likeA']) && $LikeActif[0]['likeA'] == 1);
-                            ?>
-                            <form action="../../../api/likes/create.php" method="post" class="like-form">
-                                <input type="hidden" name="numArt" value="<?php echo $art['numArt']; ?>">
-                                <input type="hidden" name="numMemb" value="<?php echo $numMemb; ?>"> 
-                                    <div class="d-flex align-items-center">
-                                        <h4 class="me-3 mb-0">Cet article vous a plu ?</h4>
-                                            <div class="form-check form-switch">
-                                                <input class="form-check-input" type="checkbox" id="likeSwitch" 
-                                                    name="likeA" 
-                                                    style="width: 3.5em; height: 1.75em; cursor: pointer;"
-                                                    onchange="this.form.submit()"
-                                                        <?php echo ($liked ? 'checked' : ''); ?>>
-                                                            <label class="form-check-label ms-2 mt-1 fw-bold" for="likeSwitch">
-                                                                <?php echo ($liked ? "J'aime déjà !" : "J'aime"); ?>
-                                                            </label>
-                                            </div>
-                                    </div>
-                            </form>
+                        <div class="likes">
+    <?php if (!isset($_SESSION['numMemb'])): ?>
+        
+        <p class="avertissement mt-3">
+            Vous devez être connecté pour liker cet article.
+        </p>
+
+    <?php else: ?>
+
+        <?php
+            $numMemb = $_SESSION['numMemb'];
+            $LikeActif = sql_select("LIKEART", "*", "numArt = {$art['numArt']} AND numMemb = {$numMemb}");
+            $liked = (!empty($LikeActif) && $LikeActif[0]['likeA'] == 1);
+        ?>
+
+        <form action="../../../api/likes/create.php" method="post" class="like-form">
+            <input type="hidden" name="numArt" value="<?php echo $art['numArt']; ?>">
+            <input type="hidden" name="numMemb" value="<?php echo $numMemb; ?>"> 
+
+            <div class="d-flex align-items-center">
+                <h4 class="me-3 mb-0">Cet article vous a plu ?</h4>
+
+                <div class="form-check form-switch">
+                    <input class="form-check-input" 
+                        type="checkbox" 
+                        id="likeSwitch"
+                        name="likeA"
+                        style="width: 3.5em; height: 1.75em; cursor: pointer;"
+                        onchange="this.form.submit()"
+                        <?php echo ($liked ? 'checked' : ''); ?>>
+                        
+                    <label class="form-check-label ms-2 mt-1 fw-bold" for="likeSwitch">
+                        <?php echo ($liked ? "J'aime déjà !" : "J'aime"); ?>
+                    </label>
+                </div>
+            </div>
+        </form>
+
+    <?php endif; ?>
+</div>
                     </div>  
             </div>
     </section>
