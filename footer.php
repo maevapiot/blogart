@@ -20,7 +20,7 @@
            <a href="#top">Retour en haut</a>
            <a href="">Mentions légales</a>
            <a href="">Contact</a>
-           <a href="">Politique de confidentialité</a>
+           <a href="/views/frontend/rgpd/cgu.php">RGPD</a>
            <a href="/views/frontend/rgpd/cgu.php">CGU</a>
        </div>
 
