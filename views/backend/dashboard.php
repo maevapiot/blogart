@@ -1,6 +1,12 @@
 <?php
-include '../../header.php';
+session_start(); // même si déjà dans header, pas grave
 
+if (($_SESSION['numStat'] ?? 0) != 1) {
+    header('Location: /views/frontend/login.php');
+    exit;
+}
+
+include '../../header.php';
 ?>
 
 <!-- Bootstrap admin dashboard template -->
