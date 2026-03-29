@@ -112,7 +112,7 @@ if ($userStat === 2 && (int)$m['numStat'] !== 3) {
 </div>
 
 <!-- SCRIPT reCAPTCHA -->
-<script src="https://www.google.com/recaptcha/api.js"></script>
+<script src="https://www.google.com/recaptcha/api.js?render=6LfCB50sAAAAAAs37uxE04I09rn4DGI5R-Vik7CY"></script>
 
 <script>
 function onSubmit(token) {

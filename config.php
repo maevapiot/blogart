@@ -1,11 +1,11 @@
 <?php
 //define ROOT_PATH
-define('ROOT', $_SERVER['DOCUMENT_ROOT']);
-define('ROOT_URL', 'http://' . $_SERVER['HTTP_HOST']);
+define('ROOT', __DIR__);
+define('ROOT_URL', 'http://' . $_SERVER['HTTP_HOST'] . '');
 
-//Load env
-require_once ROOT . '/includes/libs/DotEnv.php';
-(new DotEnv(ROOT.'/.env'))->load();
+//Load env //LIGNE REMPLACEE
+require_once __DIR__ . '/includes/libs/DotEnv.php';
+(new DotEnv(__DIR__ . '/.env'))->load();
 
 //defines
 require_once ROOT . '/config/defines.php';

@@ -1,82 +1,52 @@
 <?php
-
-
+session_start();
 
 include '../../../header.php';
-
-
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 
+// Mets ta vraie clé SITE v2 ici temporairement
+$siteKey = 'TA_VRAIE_SITE_KEY_V2';
 
-// Affiche erreur si besoin
-if (isset($_SESSION['error_message'])) {
-    /* AJOUT : sécurise l'affichage d'un message venant de la session
-       évite que des caractères spéciaux soient interprétés en HTML. */
-    echo htmlspecialchars($_SESSION['error_message']);
-    unset($_SESSION['error_message']);
+if (empty($siteKey)) {
+    die('Clé site reCAPTCHA manquante.');
 }
-
-
-// Si déjà connecté -> back (optionnel)
-// if (isset($_SESSION['pseudoMemb'])) {
-//    header("Location: " . ROOT_URL . "/views/backend/members/list.php");
-//    exit; }
 ?>
-<!-- ===================================
-     Formulaire de connexion avec reCAPTCHA v3
-     ID requis pour le callback JavaScript
-     ==================================== -->
-<form id="form-recaptcha" action="<?php echo ROOT_URL . '/api/security/login.php'; ?>" method="post">
 
-
-
-<div class= "container">
+<div class="container">
     <h1>Heureux de vous revoir</h1>
-<form action="<?php echo ROOT_URL . '/api/security/login.php'; ?>" method="post">
-    <label>Pseudo</label>
-    <input type="text" name="pseudoMemb" required>
 
+    <?php if (isset($_SESSION['error_message'])): ?>
+        <p style="color:red;">
+            <?php
+            echo htmlspecialchars($_SESSION['error_message'], ENT_QUOTES, 'UTF-8');
+            unset($_SESSION['error_message']);
+            ?>
+        </p>
+    <?php endif; ?>
 
-    <br><br>
+    <form action="<?php echo ROOT_URL . '/api/security/login.php'; ?>" method="post">
+        <label for="pseudoMemb">Pseudo</label>
+        <input type="text" id="pseudoMemb" name="pseudoMemb" required>
 
+        <br><br>
 
-    <label>Mot de passe</label>
-    <input type="password" name="passMemb" required>
+        <label for="passMemb">Mot de passe</label>
+        <input type="password" id="passMemb" name="passMemb" required>
 
+        <br><br>
 
-    <br><br>
+        <div class="g-recaptcha" data-sitekey="6LezC50sAAAAAEAAkaYzVp8zVQMTsIAFPvU7xLt5"></div>
 
+        <br>
 
-    <!-- ===================================
-         Bouton reCAPTCHA v3
-         - data-sitekey : clé site reCAPTCHA
-         - data-callback : fonction JS appelée après validation
-         - data-action : action pour identifier le formulaire
-         ==================================== -->
-    <button
-        class="g-recaptcha"
-        data-sitekey="<?php echo getenv('RECAPTCHA_SITE_KEY'); ?>"
-        data-callback="onSubmit"
-        data-action="submit"
-    >
-        Se connecter
-    </button>
-</form>
-<h2>vous n'avez pas encore de compte?</h2>
-    <a href="/views/backend/security/signup.php"><button class="btn btn-primary">créer un compte</button>
-    <p></p>
+        <button type="submit">Se connecter</button>
+    </form>
+
+    <h2>Vous n'avez pas encore de compte ?</h2>
+    <a href="/views/backend/security/signup.php" class="btn btn-primary">Créer un compte</a>
 </div>
-<!-- ===================================
-     Callback JavaScript reCAPTCHA v3
-     Appelé automatiquement après validation
-     Soumet le formulaire avec le token
-     ==================================== -->
-<script>
-function onSubmit(token) {
-    document.getElementById("form-recaptcha").submit();
-    console.log(document.getElementById("form-recaptcha"));
-}
-</script>
+
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
 <!--modif milan debut-->
 <style>
