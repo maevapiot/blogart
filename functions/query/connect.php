@@ -1,10 +1,34 @@
 <?php
-//PDO connection
+// PDO connection
 function sql_connect(){
     global $DB;
 
-    //connect BDD with PDO using SQL_HOST, SQL_USER, SQL_PWD, SQL_DB
-    // Avec encodage UTF8
-    $DB = new PDO('mysql:host=' . SQL_HOST . ';charset=utf8;dbname=' . SQL_DB, SQL_USER, SQL_PWD);
+    $dbUrl = getenv('DATABASE_URL');
+
+    if ($dbUrl) {
+        // Cas Scalingo
+        $parts = parse_url($dbUrl);
+
+        $host = $parts['host'] ?? '';
+        $port = $parts['port'] ?? 3306;
+        $user = $parts['user'] ?? '';
+        $pass = $parts['pass'] ?? '';
+        $dbname = isset($parts['path']) ? ltrim($parts['path'], '/') : '';
+
+        $dsn = "mysql:host=$host;port=$port;dbname=$dbname;charset=utf8mb4";
+
+        $DB = new PDO($dsn, $user, $pass, [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+        ]);
+    } else {
+        // Cas local
+        $dsn = "mysql:host=" . SQL_HOST . ";dbname=" . SQL_DB . ";charset=utf8mb4";
+
+        $DB = new PDO($dsn, SQL_USER, SQL_PWD, [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+        ]);
+    }
 }
 ?>
