@@ -2,7 +2,7 @@
 include '../../../header.php';
 // Charger tous les likes avec articles et membres
 $likes = sql_select(
-    "LIKEART l LEFT JOIN ARTICLE a ON l.numArt = a.numArt LEFT JOIN MEMBRE m ON l.numMemb = m.numMemb",
+    "LIKEART l LEFT JOIN article a ON l.numArt = a.numArt LEFT JOIN MEMBRE m ON l.numMemb = m.numMemb",
     "l.*, a.libTitrArt, m.pseudoMemb",
     null,
     null,
@@ -11,7 +11,7 @@ $likes = sql_select(
 
 // Statistiques par article
 $statsParArticle = sql_select(
-    "ARTICLE a LEFT JOIN LIKEART l ON a.numArt = l.numArt AND l.likeA = 1",
+    "article a LEFT JOIN LIKEART l ON a.numArt = l.numArt AND l.likeA = 1",
     "a.numArt, a.libTitrArt, COUNT(l.numMemb) as nbLikes",
     null,
     "a.numArt",

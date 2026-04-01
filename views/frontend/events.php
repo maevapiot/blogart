@@ -129,7 +129,7 @@ sql_connect();
 <body>
     <div class="container-général" style="padding: 20px;">
         <?php
-            $evenements = sql_select("ARTICLE", "*", "numThem = 1"); // Supposons que les événements ont numThem = 1
+            $evenements = sql_select("article", "*", "numThem = 1"); // Supposons que les événements ont numThem = 1
             foreach ($evenements as $evenement) : ?>
                 <a href="/views/frontend/articles/article1.php?idArt=<?php echo $evenement['numArt']; ?>" style="text-decoration: none; color: inherit;">
                     <div class="card mb-3 mt-3" style="padding: 30px; border-radius: 25px; background-color: #ffffff; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); border: none;">

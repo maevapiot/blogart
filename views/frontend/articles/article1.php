@@ -4,7 +4,7 @@ sql_connect();
 
 if (isset($_GET['idArt'])) {
 $idArt = $_GET['idArt'];
-$article = sql_select("ARTICLE", "*", "numArt = $idArt");
+$article = sql_select("article", "*", "numArt = $idArt");
 
 if ($article) {
 $art = $article[0];

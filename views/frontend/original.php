@@ -6,7 +6,7 @@ sql_connect();
 // Remplace 12 par le numArt de ton article sur Adrien Razza trouvé dans ta base
 $idUniqueArticle = 14; 
 
-$articleData = sql_select("ARTICLE", "*", "numArt = " . $idUniqueArticle);
+$articleData = sql_select("article", "*", "numArt = " . $idUniqueArticle);
 
 if ($articleData && count($articleData) > 0) {
     $article = $articleData[0];

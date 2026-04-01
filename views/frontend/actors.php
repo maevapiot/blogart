@@ -13,7 +13,7 @@ sql_connect();
 // ÉTAPE 2 : Récupération des articles
 // ---------------------------------------------------------
 $idThematiqueActeurs = 2;
-$tousLesArticles = sql_select("ARTICLE", "*", "numThem = " . $idThematiqueActeurs);
+$tousLesArticles = sql_select("article", "*", "numThem = " . $idThematiqueActeurs);
 ?>
 
 <style>
