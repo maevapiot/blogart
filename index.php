@@ -4,7 +4,7 @@ sql_connect();
 require_once __DIR__ . '/config.php';
 
 // 3 derniers articles
-$latestArticles = sql_select("ARTICLE", "*", "1=1 ORDER BY dtCreaArt DESC LIMIT 3");
+$latestArticles = sql_select("article", "*", "1=1 ORDER BY dtCreaArt DESC LIMIT 3");
 ?>
 
 <div class="hero-container">
