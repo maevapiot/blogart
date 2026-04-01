@@ -22,7 +22,7 @@ $cookieConsent = $_COOKIE['cookie_consent'] ?? null;
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Favicon -->
-    <link rel="shortcut icon" type="image/x-icon" href="<?= ROOT_URL ?>/src/images/article1.png" />
+    <link rel="shortcut icon" type="image/x-icon" href="/src/images/article1.png" />
 
     <!-- CSS HEADER -->
     <style>
@@ -124,31 +124,31 @@ $cookieConsent = $_COOKIE['cookie_consent'] ?? null;
 <header class="header">
     <div class="header-container">
 
-        <a href="<?= ROOT_URL ?>/index.php" class="logo">
-            <img src="<?= ROOT_URL ?>/src/images/logo-swag.png" alt="Logo SWAG" style="width: 65px; height: auto;">
-            <span><img src="<?= ROOT_URL ?>/src/images/Group 22.png" alt="Group 22" style="width: 125px; height: auto;"></span>
+        <a href="/index.php" class="logo">
+            <img src="/src/images/logo-swag.png" alt="Logo SWAG" style="width: 65px; height: auto;">
+            <span><img src="/src/images/Group 22.png" alt="Group 22" style="width: 125px; height: auto;"></span>
         </a>
 
         <nav class="main-nav">
-            <a href="<?= ROOT_URL ?>/views/frontend/events.php">ÉVÉNEMENTS</a>
-            <a href="<?= ROOT_URL ?>/views/frontend/original.php">INSOLITE</a>
-            <a href="<?= ROOT_URL ?>/views/frontend/actors.php">ACTEURS</a>
+            <a href="/views/frontend/events.php">ÉVÉNEMENTS</a>
+            <a href="/views/frontend/original.php">INSOLITE</a>
+            <a href="/views/frontend/actors.php">ACTEURS</a>
 
             <?php if (isset($_SESSION['numStat']) && $_SESSION['numStat'] !== 3): ?>
-                <a href="<?= ROOT_URL ?>/views/backend/dashboard.php">ADMIN</a>
+                <a href="/views/backend/dashboard.php">ADMIN</a>
             <?php endif; ?>
         </nav>
 
         <div class="header-icon">
-            <a href="<?= ROOT_URL ?>/index.php" class="header-icon">
-                <img src="<?= ROOT_URL ?>/src/images/icon-star.png" alt="Recherche" style="width: 60px; height: auto;">
+            <a href="/index.php" class="header-icon">
+                <img src="/src/images/icon-star.png" alt="Recherche" style="width: 60px; height: auto;">
             </a>
         </div>
 
         <?php if (isset($_SESSION['pseudoMemb'])): ?>
-            <a href="<?= ROOT_URL ?>/api/security/disconnect.php" class="login-btn">LOGOUT</a>
+            <a href="/api/security/disconnect.php" class="login-btn">LOGOUT</a>
         <?php else: ?>
-            <a href="<?= ROOT_URL ?>/views/backend/security/login.php" class="login-btn">LOGIN</a>
+            <a href="/views/backend/security/login.php" class="login-btn">LOGIN</a>
         <?php endif; ?>
 
     </div>
