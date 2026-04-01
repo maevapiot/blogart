@@ -48,7 +48,7 @@ foreach($latestArticles as $article) {
 ?>
 <div class="col-md-4">
 <div class="card h-100 article-card">
-<img src="<?php echo ROOT_URL . '/src/uploads/' . htmlspecialchars($article['urlPhotArt']); ?>"
+<img src="<?= '/src/uploads/' . htmlspecialchars($article['urlPhotArt']) ?>" alt="">
 class="card-img-top"
 alt="<?php echo htmlspecialchars($article['libTitrArt']); ?>">
 <div class="card-body d-flex flex-column">
