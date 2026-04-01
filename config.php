@@ -1,6 +1,12 @@
 <?php
 define('ROOT', __DIR__);
-define('ROOT_URL', ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST']);
+
+$isHttps =
+    (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+    || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
+    || (isset($_SERVER['SERVER_PORT']) && (int) $_SERVER['SERVER_PORT'] === 443);
+
+define('ROOT_URL', ($isHttps ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST']);
 
 // Charger le .env seulement s'il existe
 if (file_exists(__DIR__ . '/.env')) {
