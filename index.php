@@ -1,7 +1,7 @@
 <?php
-require_once 'header.php';
-sql_connect();
 require_once __DIR__ . '/config.php';
+sql_connect();
+require_once 'header.php';
 
 // 3 derniers articles
 $latestArticles = sql_select("article", "*", "1=1 ORDER BY dtCreaArt DESC LIMIT 3");
